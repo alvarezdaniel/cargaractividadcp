@@ -7,16 +7,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-
 namespace CargarActividadCP
 {
-    
     public partial class Form1 : Form
     {
         // Get a handle to an application window.
         [DllImport("USER32.DLL")]
-        public static extern IntPtr FindWindow(string lpClassName,
-            string lpWindowName);
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         // Activate an application window.
         [DllImport("USER32.DLL")]
@@ -28,6 +25,11 @@ namespace CargarActividadCP
         }
 
         private void button2_Click(object sender, EventArgs e)
+        {
+            ProcesaClipboard();
+        }
+
+        private void ProcesaClipboard()
         {
             if (Clipboard.ContainsText())
             {
