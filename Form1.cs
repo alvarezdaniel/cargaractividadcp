@@ -6,6 +6,16 @@ namespace CargarActividadCP
 {
     public partial class Form1 : Form
     {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Process();
+        }
+
         // Get a handle to an application window.
         [DllImport("USER32.DLL")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -14,17 +24,7 @@ namespace CargarActividadCP
         [DllImport("USER32.DLL")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            ProcesaClipboard();
-        }
-
-        private void ProcesaClipboard()
+        public void Process()
         {
             if (Clipboard.ContainsText())
             {
@@ -45,7 +45,7 @@ namespace CargarActividadCP
                     return;
                 }
 
-                const int COLS = 11;
+                const int COLS = 10;
 
                 int cant = array.Length / COLS;
                 textBox1.AppendText("Actividades: " + cant);
@@ -58,8 +58,8 @@ namespace CargarActividadCP
                 const int K_FECHA = 0;
                 const int K_DESC = 9;
                 const int K_CARGADO = 5;
-                
-                for (int act = 0; act <= cant-1; act++)
+
+                for (int act = 0; act <= cant - 1; act++)
                 {
                     textBox1.AppendText(Environment.NewLine);
                     string recurso = "DAE";
@@ -103,10 +103,10 @@ namespace CargarActividadCP
             }
         }
 
-        private void CargarActividad(string recurso, string tarea, string tipoActividad, string horas, string minutos, string descripcion, string dia, string mes, string anio)
+        public void CargarActividad(string recurso, string tarea, string tipoActividad, string horas, string minutos, string descripcion, string dia, string mes, string anio)
         {
             // http://www.autoitscript.com/autoit3/docs/appendix/SendKeys.htm
-            
+
             // Get a handle to the Calculator application. The window class
             // and window name were obtained using the Spy++ tool.
             IntPtr cpHandle = FindWindow("TFrmModuleMain", null);
@@ -124,40 +124,50 @@ namespace CargarActividadCP
             System.Threading.Thread.Sleep(1000);
 
             // Abre una nueva actividad
+            // Fix: si la entidad actual no es la de Actividades, problemas!
             SendKeys.SendWait("^N");
+            //SendKeys.SendWait("{ESCAPE}");
+            //SendKeys.SendWait("{ESCAPE}");
+            //SendKeys.SendWait("{ESCAPE}");
+            //SendKeys.SendWait("!A");
+            //SendKeys.SendWait("{ENTER}");
+            //SendKeys.SendWait("{ENTER}");
+            //SendKeys.SendWait("{DOWN}");
+            //SendKeys.SendWait("{DOWN}");
+            //SendKeys.SendWait("{ENTER}");
 
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(500);
 
             SendKeys.SendWait(recurso);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
-            System.Threading.Thread.Sleep(100);
-            
+            System.Threading.Thread.Sleep(70);
+
             SendKeys.SendWait(tarea);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
-            System.Threading.Thread.Sleep(100);
-            
+            System.Threading.Thread.Sleep(70);
+
             SendKeys.SendWait(tipoActividad);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
-            System.Threading.Thread.Sleep(100);
-            
+            System.Threading.Thread.Sleep(70);
+
             SendKeys.SendWait(horas);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
 
             SendKeys.SendWait(minutos);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
 
             // Primero carga el mes, porque sino, por ejemplo, no se puede cargar 30/01 en febrero
             #region old
@@ -179,44 +189,44 @@ namespace CargarActividadCP
             // Primero pone día 01
             string dia1 = "01";
             SendKeys.SendWait(dia1);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{RIGHT}");
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
 
             // Pone el mes
             if (mes.Length == 1)
                 mes = "0" + mes;
             SendKeys.SendWait(mes);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
 
             // Vuelve atrás y pone el día
             SendKeys.SendWait("{LEFT}");
-            System.Threading.Thread.Sleep(100);
-            
+            System.Threading.Thread.Sleep(70);
+
             if (dia.Length == 1)
                 dia = "0" + dia;
             SendKeys.SendWait(dia);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{RIGHT}");
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
 
             SendKeys.SendWait("{RIGHT}");
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
 
             // Pone el año
             SendKeys.SendWait(anio);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
 
             // Va para atrás con Shift-TAB 11 veces para llegar al campo descripción
-            for (int i = 1; i<=11; i++)
+            for (int i = 1; i <= 11; i++)
             {
                 SendKeys.SendWait("+{TAB}");
-                System.Threading.Thread.Sleep(50);
+                System.Threading.Thread.Sleep(40);
             }
 
             //SendKeys.SendWait("{TAB}");
             //System.Threading.Thread.Sleep(100);
-            
+
             // Agrego 2 TABS para pasar de largo los campos de horas restantes
             //SendKeys.SendWait("{TAB}");
             //System.Threading.Thread.Sleep(100);
@@ -224,13 +234,13 @@ namespace CargarActividadCP
             //System.Threading.Thread.Sleep(100);
 
             SendKeys.SendWait(descripcion);
-            System.Threading.Thread.Sleep(100);
+            System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
 
-            System.Threading.Thread.Sleep(1000);
-            SendKeys.SendWait("%A");
-            System.Threading.Thread.Sleep(200);
-            SendKeys.SendWait("G");
+            //System.Threading.Thread.Sleep(1000);
+            //SendKeys.SendWait("%A");
+            //System.Threading.Thread.Sleep(200);
+            //SendKeys.SendWait("G");
         }
     }
 }
