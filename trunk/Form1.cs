@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 namespace CargarActividadCP
 {
@@ -28,10 +29,12 @@ namespace CargarActividadCP
         {
             if (Clipboard.ContainsText())
             {
-                string s = Clipboard.GetText(TextDataFormat.Text).Replace(Environment.NewLine, string.Empty);
+                // Obtiene contenido del clipboard
+                var s = Clipboard.GetText(TextDataFormat.Text).Replace(Environment.NewLine, string.Empty);
                 //textBox1.Text = s;
 
-                string[] array = s.Split("\t".ToCharArray());
+                // Lo convierte en un array
+                var array = s.Split("\t".ToCharArray());
                 /*
                 foreach (string a in array)
                 {
@@ -39,11 +42,15 @@ namespace CargarActividadCP
                 }
                 */
 
+                // Valida que tenga elementos
                 if (array.Length <= 1)
                 {
                     MessageBox.Show("Invalid clipboard text");
                     return;
                 }
+
+                // Carga el array de actividades a cargar
+                //var actividades = ParseArray(array);
 
                 const int COLS = 10;
 
@@ -103,7 +110,42 @@ namespace CargarActividadCP
             }
         }
 
-        public void CargarActividad(string recurso, string tarea, string tipoActividad, string horas, string minutos, string descripcion, string dia, string mes, string anio)
+        private static List<Actividad> ParseArray(string[] array)
+        {
+            var lista = new List<Actividad>();
+            Actividad actividad;
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                var item = array[i];
+                
+                // Si es una fecha, comienza la actividad
+                if (item.Split("/".ToCharArray()).Length == 3)
+                {
+                    actividad = new Actividad();
+                    lista.Add(actividad);
+
+                    string[] f = item.Split("/".ToCharArray());
+                    actividad.Dia = int.Parse(f[0]);
+                    actividad.Mes = int.Parse(f[1]);
+                    actividad.Anio = int.Parse(f[2]);
+
+                    // Recorre los demás elementos hasta encontrar otra fecha o que termine el array
+                    bool isNotFecha = false;
+                    while (isNotFecha && i < array.Length)
+                    {
+                        item = array[i];
+
+
+                    }
+                }
+
+            }
+
+            return lista;
+        }
+
+        public static void CargarActividad(string recurso, string tarea, string tipoActividad, string horas, string minutos, string descripcion, string dia, string mes, string anio)
         {
             // http://www.autoitscript.com/autoit3/docs/appendix/SendKeys.htm
 
@@ -237,10 +279,10 @@ namespace CargarActividadCP
             System.Threading.Thread.Sleep(70);
             SendKeys.SendWait("{TAB}");
 
-            //System.Threading.Thread.Sleep(1000);
-            //SendKeys.SendWait("%A");
-            //System.Threading.Thread.Sleep(200);
-            //SendKeys.SendWait("G");
+            System.Threading.Thread.Sleep(1000);
+            SendKeys.SendWait("%A");
+            System.Threading.Thread.Sleep(200);
+            SendKeys.SendWait("G");
         }
     }
 }
